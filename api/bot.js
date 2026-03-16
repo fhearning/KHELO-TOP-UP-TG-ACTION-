@@ -1,19 +1,33 @@
-export default async function handler(req, res) {
+import approveOrder from "./approveOrder.js"
+import rejectOrder from "./rejectOrder.js"
+import approveDeposit from "./approveDeposit.js"
+import rejectDeposit from "./rejectDeposit.js"
 
-  console.log("Telegram update:", req.body)
+export default async function handler(req,res){
 
-  if (req.body.callback_query) {
-    const callbackId = req.body.callback_query.id
+const body=req.body
 
-    await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        callback_query_id: callbackId,
-        text: "Button clicked"
-      })
-    })
-  }
+if(body.callback_query){
 
-  res.status(200).send("OK")
+const data=body.callback_query.data
+
+if(data.startsWith("approve_order_")){
+await approveOrder(data)
+}
+
+if(data.startsWith("reject_order_")){
+await rejectOrder(data)
+}
+
+if(data.startsWith("approve_deposit_")){
+await approveDeposit(data)
+}
+
+if(data.startsWith("reject_deposit_")){
+await rejectDeposit(data)
+}
+
+}
+
+res.status(200).send("OK")
 }
