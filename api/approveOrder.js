@@ -1,13 +1,11 @@
 import {db} from "../firebase.js"
 
-export default async function handler(req,res){
+export default async function approveOrder(data){
 
-const id=req.query.id
+const id=data.replace("approve_order_","")
 
 await db.collection("orders").doc(id).update({
 status:"success"
 })
-
-res.json({success:true})
 
 }
