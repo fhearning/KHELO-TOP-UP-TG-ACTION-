@@ -1,21 +1,11 @@
-import {db,FieldValue} from "../firebase.js"
+import {db} from "../firebase.js"
 
-export default async function handler(req,res){
+export default async function rejectOrder(data){
 
-const id=req.query.id
-
-const orderDoc=await db.collection("orders").doc(id).get()
-
-const order=orderDoc.data()
+const id=data.replace("reject_order_","")
 
 await db.collection("orders").doc(id).update({
 status:"cancel"
 })
-
-await db.collection("users").doc(order.userId).update({
-balance:FieldValue.increment(order.price)
-})
-
-res.json({success:true})
 
 }
